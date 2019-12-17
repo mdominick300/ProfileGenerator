@@ -5,6 +5,7 @@ const axios = require("axios");
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
+const repoCount =[];
 const colors = {
     green: {
         wrapperBackground: "#E6E1C3",
@@ -229,6 +230,7 @@ promptUser()
 
     axios.get(queryUrl).then(function(res) {
         console.log(res.data.location);
+        repoCount.push(res.data.public_repos)
       const repoCount = res.data.public_repos
       const userName = res.data.login
       const link = res.data.url
