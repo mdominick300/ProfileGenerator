@@ -228,12 +228,23 @@ promptUser()
     const queryUrl = `https://api.github.com/users/${username}`;
 
     axios.get(queryUrl).then(function(res) {
-      const repoCount = res.data.public_repos 
-      })
-    })
+        console.log(res.data.location);
+      const repoCount = res.data.public_repos
+      const userName = res.data.login
+      const link = res.data.url
+      const location = res.data.location
+      const bio = res.data.bio
+      const pic =res.data.avatar_url
+      const followers = res.data.followers
+      const following = res.data.following
 
-  .then(function(answers) {
-    const html = generateHTML(answers);
+
+      })
+      
+//     })
+
+//   .then(function(answers) {
+    const html = generateHTML(username);
 
     return writeFileAsync("index.html", html);
   })
@@ -244,7 +255,7 @@ promptUser()
     console.log(err);
   });
 
-  function generateHTML(answers) {
+  function generateHTML(res) {
     return `
   <!DOCTYPE html>
   <html lang="en">
@@ -257,7 +268,7 @@ promptUser()
   <body>
     <div class="jumbotron jumbotron-fluid">
     <div class="container">
-      <h1 class="display-4">Hi! My name is ${answers.color}</h1>
+      
      <h1> ${repoCount}</h1>
     </div>
   </div>
