@@ -5,7 +5,7 @@ const axios = require("axios");
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
-const repoCount =[];
+
 const colors = {
     green: {
         wrapperBackground: "#E6E1C3",
@@ -59,225 +59,221 @@ function promptUser() {
 }
 
 
-// function generateHTML(data) {
-//     return `<!DOCTYPE html>
-//   <html lang="en">
-//      <head>
-//         <meta charset="UTF-8" />
-//         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-//         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-//         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"/>
-//         <link href="https://fonts.googleapis.com/css?family=BioRhyme|Cabin&display=swap" rel="stylesheet">
-//         <title>Document</title>
-//         <style>
-//             @page {
-//               margin: 0;
-//             }
-//            *,
-//            *::after,
-//            *::before {
-//            box-sizing: border-box;
-//            }
-//            html, body {
-//            padding: 0;
-//            margin: 0;
-//            }
-//            html, body, .wrapper {
-//            height: 100%;
-//            }
-//            .wrapper {
-//            background-color: ${colors[data.color].wrapperBackground};
-//            padding-top: 100px;
-//            }
-//            body {
-//            background-color: white;
-//            -webkit-print-color-adjust: exact !important;
-//            font-family: 'Cabin', sans-serif;
-//            }
-//            main {
-//            background-color: #E9EDEE;
-//            height: auto;
-//            padding-top: 30px;
-//            }
-//            h1, h2, h3, h4, h5, h6 {
-//            font-family: 'BioRhyme', serif;
-//            margin: 0;
-//            }
-//            h1 {
-//            font-size: 3em;
-//            }
-//            h2 {
-//            font-size: 2.5em;
-//            }
-//            h3 {
-//            font-size: 2em;
-//            }
-//            h4 {
-//            font-size: 1.5em;
-//            }
-//            h5 {
-//            font-size: 1.3em;
-//            }
-//            h6 {
-//            font-size: 1.2em;
-//            }
-//            .photo-header {
-//            position: relative;
-//            margin: 0 auto;
-//            margin-bottom: -50px;
-//            display: flex;
-//            justify-content: center;
-//            flex-wrap: wrap;
-//            background-color: ${colors[data.color].headerBackground};
-//            color: ${colors[data.color].headerColor};
-//            padding: 10px;
-//            width: 95%;
-//            border-radius: 6px;
-//            }
-//            .photo-header img {
-//            width: 250px;
-//            height: 250px;
-//            border-radius: 50%;
-//            object-fit: cover;
-//            margin-top: -75px;
-//            border: 6px solid ${colors[data.color].photoBorderColor};
-//            box-shadow: rgba(0, 0, 0, 0.3) 4px 1px 20px 4px;
-//            }
-//            .photo-header h1, .photo-header h2 {
-//            width: 100%;
-//            text-align: center;
-//            }
-//            .photo-header h1 {
-//            margin-top: 10px;
-//            }
-//            .links-nav {
-//            width: 100%;
-//            text-align: center;
-//            padding: 20px 0;
-//            font-size: 1.1em;
-//            }
-//            .nav-link {
-//            display: inline-block;
-//            margin: 5px 10px;
-//            }
-//            .workExp-date {
-//            font-style: italic;
-//            font-size: .7em;
-//            text-align: right;
-//            margin-top: 10px;
-//            }
-//            .container {
-//            padding: 50px;
-//            padding-left: 100px;
-//            padding-right: 100px;
-//            }
+function generateHTML(res, color) {
+    return `<!DOCTYPE html>
+  <html lang="en">
+     <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"/>
+        <link href="https://fonts.googleapis.com/css?family=BioRhyme|Cabin&display=swap" rel="stylesheet">
+        <title>Document</title>
+        <style>
+            @page {
+              margin: 0;
+            }
+           *,
+           *::after,
+           *::before {
+           box-sizing: border-box;
+           }
+           html, body {
+           padding: 0;
+           margin: 0;
+           }
+           html, body, .wrapper {
+           height: 100%;
+           }
+           .wrapper {
+           background-color: ${colors[color].wrapperBackground};
+           padding-top: 100px;
+           }
+           body {
+           background-color: white;
+           -webkit-print-color-adjust: exact !important;
+           font-family: 'Cabin', sans-serif;
+           }
+           main {
+           background-color: #E9EDEE;
+           height: auto;
+           padding-top: 30px;
+           }
+           h1, h2, h3, h4, h5, h6 {
+           font-family: 'BioRhyme', serif;
+           margin: 0;
+           }
+           h1 {
+           font-size: 3em;
+           }
+           h2 {
+           font-size: 2.5em;
+           }
+           h3 {
+           font-size: 2em;
+           }
+           h4 {
+           font-size: 1.5em;
+           }
+           h5 {
+           font-size: 1.3em;
+           }
+           h6 {
+           font-size: 1.2em;
+           }
+           .photo-header {
+           position: relative;
+           margin: 0 auto;
+           margin-bottom: -50px;
+           display: flex;
+           justify-content: center;
+           flex-wrap: wrap;
+           background-color: ${colors[color].headerBackground};
+           color: ${colors[color].headerColor};
+           padding: 10px;
+           width: 95%;
+           border-radius: 6px;
+           }
+           .photo-header img {
+           width: 250px;
+           height: 250px;
+           border-radius: 50%;
+           object-fit: cover;
+           margin-top: -75px;
+           border: 6px solid ${colors[color].photoBorderColor};
+           box-shadow: rgba(0, 0, 0, 0.3) 4px 1px 20px 4px;
+           }
+           .photo-header h1, .photo-header h2 {
+           width: 100%;
+           text-align: center;
+           }
+           .photo-header h1 {
+           margin-top: 10px;
+           }
+           .links-nav {
+           width: 100%;
+           text-align: center;
+           padding: 20px 0;
+           font-size: 1.1em;
+           }
+           .nav-link {
+           display: inline-block;
+           margin: 5px 10px;
+           }
+           .workExp-date {
+           font-style: italic;
+           font-size: .7em;
+           text-align: right;
+           margin-top: 10px;
+           }
+           .container {
+           padding: 50px;
+           padding-left: 100px;
+           padding-right: 100px;
+           }
 
-//            .row {
-//              display: flex;
-//              flex-wrap: wrap;
-//              justify-content: space-between;
-//              margin-top: 20px;
-//              margin-bottom: 20px;
-//            }
+           .row {
+             display: flex;
+             flex-wrap: wrap;
+             justify-content: space-between;
+             margin-top: 20px;
+             margin-bottom: 20px;
+           }
 
-//            .card {
-//              padding: 20px;
-//              border-radius: 6px;
-//              background-color: ${colors[data.color].headerBackground};
-//              color: ${colors[data.color].headerColor};
-//              margin: 20px;
-//            }
+           .card {
+             padding: 20px;
+             border-radius: 6px;
+             background-color: ${colors[color].headerBackground};
+             color: ${colors[color].headerColor};
+             margin: 20px;
+           }
 
-//            .col {
-//            flex: 1;
-//            text-align: center;
-//            }
+           .col {
+           flex: 1;
+           text-align: center;
+           }
 
-//            a, a:hover {
-//            text-decoration: none;
-//            color: inherit;
-//            font-weight: bold;
-//            }
+           a, a:hover {
+           text-decoration: none;
+           color: inherit;
+           font-weight: bold;
+           }
 
-//            @media print { 
-//             body { 
-//               zoom: .75; 
-//             } 
-//            }
-//         </style>
-//         </head>
-// <body>
-//   <div class="jumbotron jumbotron-fluid">
-//   <div class="container">
-//     <h1 class="display-4">Hi! My name is ${answers.name}</h1>
-//     <p class="lead">I am from ${answers.location}.</p>
-//     <h3>Example heading <span class="badge badge-secondary">Contact Me</span></h3>
-//     <ul class="list-group">
-//       <li class="list-group-item">My GitHub username is ${answers.github}</li>
-//       <li class="list-group-item">LinkedIn: ${answers.linkedin}</li>
-//     </ul>
-//   </div>
-// </div>
-// </body>
-// </html>`;
-// }
+           @media print { 
+            body { 
+              zoom: .75; 
+            } 
+           }
+        </style>
+        </head>
+<body>
+${res.data.name}
+</body>
+</html>`;
+}
 
 promptUser()
 
-.then(function({ username }) {
+.then(function({ username ,color }) {
     console.log(`${username}`);
     const queryUrl = `https://api.github.com/users/${username}`;
 
-    axios.get(queryUrl).then(function(res) {
-        console.log(res.data.location);
-        repoCount.push(res.data.public_repos)
-      const repoCount = res.data.public_repos
-      const userName = res.data.login
-      const link = res.data.url
-      const location = res.data.location
-      const bio = res.data.bio
-      const pic =res.data.avatar_url
-      const followers = res.data.followers
-      const following = res.data.following
-
+    axios.get(queryUrl)
+    .then(function(res) {
+      
+      const html = generateHTML(res, color);
+    
+      return writeFileAsync("index.html", html);
+        console.log(res.data.avatar_url);
+        console.log("Bio: " + res.data.bio);
+        console.log("Repo Url: " + res.data.url);
+        console.log("Repos: " + res.data.public_repos);
+        console.log("Followers: " + res.data.followers);
+        console.log("Following: "+res.data.following);
+        console.log(res.data.name);
+      
+      
 
       })
       
-//     })
+   
 
-//   .then(function(answers) {
-    const html = generateHTML(username);
-
-    return writeFileAsync("index.html", html);
-  })
+  // .then(function(res) {
+    
+  //   const html = generateHTML(res);
+    
+  //   return writeFileAsync("index.html", html);
+  // })
   .then(function() {
     console.log("Successfully wrote to index.html");
   })
   .catch(function(err) {
     console.log(err);
   });
-
-  function generateHTML(res) {
-    return `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <title>Document</title>
-  </head>
-  <body>
-    <div class="jumbotron jumbotron-fluid">
-    <div class="container">
+})
+//   function generateHTML(res) {
+    
+//     return `
+//   <!DOCTYPE html>
+//   <html lang="en">
+//   <head>
+//     <meta charset="UTF-8">
+//     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+//     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+//     <title>Document</title>
+//   </head>
+//   <body>
+//     <div class="jumbotron jumbotron-fluid">
+//     <div class="container">
       
-     <h1> ${repoCount}</h1>
-    </div>
-  </div>
-  </body>
-  </html>`;
-  }
-
+//      <h1> ${res.data.name}</h1>
+//      <p> ${res.data.bio}</p>
+//     </div>
+//   </div>
+//   </body>
+//   </html>`;
+//   }
+// })
 // const questions = [{
 //     type: "input",
 //     name: "name",
