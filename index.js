@@ -7,60 +7,55 @@ const writeFileAsync = util.promisify(fs.writeFile);
 
 
 const colors = {
-    green: {
-        wrapperBackground: "#E6E1C3",
-        headerBackground: "#C1C72C",
-        headerColor: "black",
-        photoBorderColor: "#black"
-    },
-    blue: {
-        wrapperBackground: "#5F64D3",
-        headerBackground: "#26175A",
-        headerColor: "white",
-        photoBorderColor: "#73448C"
-    },
-    pink: {
-        wrapperBackground: "#879CDF",
-        headerBackground: "#FF8374",
-        headerColor: "white",
-        photoBorderColor: "#FEE24C"
-    },
-    red: {
-        wrapperBackground: "#DE9967",
-        headerBackground: "#870603",
-        headerColor: "white",
-        photoBorderColor: "white"
-    }
+  green: {
+    wrapperBackground: "#E6E1C3",
+    headerBackground: "#C1C72C",
+    headerColor: "black",
+    photoBorderColor: "#black"
+  },
+  blue: {
+    wrapperBackground: "#5F64D3",
+    headerBackground: "#26175A",
+    headerColor: "white",
+    photoBorderColor: "#73448C"
+  },
+  pink: {
+    wrapperBackground: "#879CDF",
+    headerBackground: "#FF8374",
+    headerColor: "white",
+    photoBorderColor: "#FEE24C"
+  },
+  red: {
+    wrapperBackground: "#DE9967",
+    headerBackground: "#870603",
+    headerColor: "white",
+    photoBorderColor: "white"
+  }
 };
 
 function promptUser() {
-    return inquirer.prompt([
-        {
-            type: "input",
-            name: "username",
-            message: "What is your github username?"
-        },
-        {
-            type: "list",
-            message: "What is your favorite color?",
-            name: "color",
-            choices: [
-                "blue",
-                "yellow",
-                "purple",
-                "green",
-                "red",
-                "orange",
-                "black",
-                "brown"
-            ]
-        }
-    ]);
+  return inquirer.prompt([
+    {
+      type: "input",
+      name: "username",
+      message: "What is your github username?"
+    },
+    {
+      type: "list",
+      message: "What is your favorite color?",
+      name: "color",
+      choices: [
+        "blue",
+        "green",
+        "red"
+      ]
+    }
+  ]);
 }
 
 
 function generateHTML(res, color) {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
   <html lang="en">
      <head>
         <meta charset="UTF-8" />
@@ -207,90 +202,64 @@ function generateHTML(res, color) {
         </style>
         </head>
 <body>
-${res.data.name}
+<div class="container wrapper">
+<div class="row">
+<div class="photo-header">
+<div class=""><img src="${res.data.avatar_url}" alt="image"></div>
+<br>
+<div></div>
+<br>
+<div class="row"><h1>Hello</h1><h1>My name is ${res.data.name}</h1></div>
+<br>
+</div>
+</div>
+<main>
+<div class="row">
+<div><h2>${res.data.bio}</h2></div>
+</div>
+
+
+<div class="row">
+<div class="card col "><h2>Repos<br>${res.data.public_repos}</h2></div>
+<div class="card col"><h2>Followers<br>${res.data.followers}</h2></div>
+</div>
+<div class="row">
+<div class="card col"><h2>Following<br>${res.data.following}</h2></div>
+<div class="card col"><h2>Repos<br>${res.data.public_repos}</h2></div>
+</div>
+</main>
+</div>
 </body>
 </html>`;
 }
 
 promptUser()
 
-.then(function({ username ,color }) {
+  .then(function ({ username, color }) {
     console.log(`${username}`);
     const queryUrl = `https://api.github.com/users/${username}`;
 
     axios.get(queryUrl)
-    .then(function(res) {
-      
-      const html = generateHTML(res, color);
-    
-      return writeFileAsync("index.html", html);
+      .then(function (res) {
+
+        const html = generateHTML(res, color);
+
+        return writeFileAsync("index.html", html);
         console.log(res.data.avatar_url);
         console.log("Bio: " + res.data.bio);
         console.log("Repo Url: " + res.data.url);
         console.log("Repos: " + res.data.public_repos);
         console.log("Followers: " + res.data.followers);
-        console.log("Following: "+res.data.following);
+        console.log("Following: " + res.data.following);
         console.log(res.data.name);
-      
-      
+
+
 
       })
-      
-   
-
-  // .then(function(res) {
-    
-  //   const html = generateHTML(res);
-    
-  //   return writeFileAsync("index.html", html);
-  // })
-  .then(function() {
-    console.log("Successfully wrote to index.html");
+      .then(function () {
+        console.log("Successfully wrote to index.html");
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
   })
-  .catch(function(err) {
-    console.log(err);
-  });
-})
-//   function generateHTML(res) {
-    
-//     return `
-//   <!DOCTYPE html>
-//   <html lang="en">
-//   <head>
-//     <meta charset="UTF-8">
-//     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-//     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-//     <title>Document</title>
-//   </head>
-//   <body>
-//     <div class="jumbotron jumbotron-fluid">
-//     <div class="container">
-      
-//      <h1> ${res.data.name}</h1>
-//      <p> ${res.data.bio}</p>
-//     </div>
-//   </div>
-//   </body>
-//   </html>`;
-//   }
-// })
-// const questions = [{
-//     type: "input",
-//     name: "name",
-//     message: "What is your github username?"
-//   },
-//   {
-//     type: "input",
-//     name: "color",
-//     message: "What is your favorite color?"
-//   }
-
-// ];
-
-// function writeToFile(fileName, data) {
-
-// }
-
-// function init() {
-
-//     init();
