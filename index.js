@@ -2,6 +2,8 @@ const inquirer = require("inquirer");
 const fs = require("fs");
 const util = require("util");
 const axios = require("axios");
+var pdf = require('html-pdf');
+var options = { format: 'Tabloid' };
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
@@ -220,12 +222,12 @@ function generateHTML(res, color) {
 
 
 <div class="row">
-<div class="card col "><h2>Repos<br>${res.data.public_repos}</h2></div>
+<div class="card col "><h2>Github Stars<br></h2></div>
 <div class="card col"><h2>Followers<br>${res.data.followers}</h2></div>
 </div>
 <div class="row">
 <div class="card col"><h2>Following<br>${res.data.following}</h2></div>
-<div class="card col"><h2>Repos<br>${res.data.public_repos}</h2></div>
+<div class="card col"><h2>Public Repositories<br>${res.data.public_repos}</h2></div>
 </div>
 </main>
 </div>
@@ -245,16 +247,15 @@ promptUser()
         const html = generateHTML(res, color);
 
         return writeFileAsync("index.html", html);
-        console.log(res.data.avatar_url);
-        console.log("Bio: " + res.data.bio);
-        console.log("Repo Url: " + res.data.url);
-        console.log("Repos: " + res.data.public_repos);
-        console.log("Followers: " + res.data.followers);
-        console.log("Following: " + res.data.following);
-        console.log(res.data.name);
+      
 
-
-
+      })
+      .then(function(){
+        var html = fs.readFileSync('index.html', 'utf8');
+        pdf.create(html, options).toFile('profile.pdf', function(err, res) {
+          if (err) return console.log(err);
+          console.log(res); // { filename: '/app/businesscard.pdf' }
+        });
       })
       .then(function () {
         console.log("Successfully wrote to index.html");
@@ -263,3 +264,8 @@ promptUser()
         console.log(err);
       });
   })
+
+  // pdf.create(html, options).toFile('./businesscard.pdf', function(err, res) {
+  //   if (err) return console.log(err);
+  //   console.log(res); // { filename: '/app/businesscard.pdf' }
+  // });
