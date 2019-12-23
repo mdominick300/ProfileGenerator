@@ -34,7 +34,7 @@ const colors = {
     photoBorderColor: "white"
   }
 };
-
+// gets user inputs
 function promptUser() {
   return inquirer.prompt([
     {
@@ -49,14 +49,15 @@ function promptUser() {
       choices: [
         "blue",
         "green",
-        "red"
+        "red",
+        "pink"
       ]
     }
   ]);
 }
 
-
-function generateHTML(res, color) {
+// creates a html 
+function generateHTML(res, color, stars) {
   return `<!DOCTYPE html>
   <html lang="en">
      <head>
@@ -204,30 +205,32 @@ function generateHTML(res, color) {
         </style>
         </head>
 <body>
-<div class="container wrapper">
-<div class="row">
-<div class="photo-header">
-<div class=""><img src="${res.data.avatar_url}" alt="image"></div>
-<br>
-<div></div>
-<br>
-<div class="row"><h1>Hello</h1><h1>My name is ${res.data.name}</h1></div>
-<br>
-</div>
-</div>
+<div class="">
+  <div class="container wrapper">
+    <div class="row">
+      <div class="photo-header">
+        <div class=""><img src="${res.data.avatar_url}" alt="image"></div>
+        <div class="row">
+          <h1>Hello</h1>
+          <h1>My name is ${res.data.name}</h1>
+          <h2>${res.data.location}</h2>
+        </div>
+      </div>
+    </div>
+  </div>  
 <main>
-<div class="row">
-<div><h2>${res.data.bio}</h2></div>
-</div>
-
-
-<div class="row">
-<div class="card col "><h2>Github Stars<br></h2></div>
-<div class="card col"><h2>Followers<br>${res.data.followers}</h2></div>
-</div>
-<div class="row">
-<div class="card col"><h2>Following<br>${res.data.following}</h2></div>
-<div class="card col"><h2>Public Repositories<br>${res.data.public_repos}</h2></div>
+<div class="container">
+  <div class="row">
+    <div><h2>${res.data.bio}</h2></div>
+  </div>
+  <div class="row">
+    <div class="card col "><h2>Github Stars<br>${stars}</h2></div>
+    <div class="card col"><h2>Followers<br>${res.data.followers}</h2></div>
+  </div>
+  <div class="row">
+    <div class="card col"><h2>Following<br>${res.data.following}</h2></div>
+    <div class="card col"><h2>Public Repositories<br>${res.data.public_repos}</h2></div>
+  </div>
 </div>
 </main>
 </div>
@@ -235,26 +238,36 @@ function generateHTML(res, color) {
 </html>`;
 }
 
+// calls the user to be prompted
 promptUser()
 
   .then(function ({ username, color }) {
     console.log(`${username}`);
     const queryUrl = `https://api.github.com/users/${username}`;
+    const queryUrl2 = `https://api.github.com/users/${username}/starred`;
 
-    axios.get(queryUrl)
-      .then(function (res) {
-
-        const html = generateHTML(res, color);
+    // axios call for stars
+    axios.get(queryUrl2).then(function (res) {
+      let stars = 0;
+      res.data.forEach(function(obj){
+        stars += obj.stargazers_count;
+      })
+    // axios call for pulling information from github
+   axios.get(queryUrl).then(function (res) {
+      const html = generateHTML(res, color, stars);
 
         return writeFileAsync("index.html", html);
       
-
+   })
       })
+
+      // creates pdf file from the html
+
       .then(function(){
         var html = fs.readFileSync('index.html', 'utf8');
         pdf.create(html, options).toFile('profile.pdf', function(err, res) {
           if (err) return console.log(err);
-          console.log(res); // { filename: '/app/businesscard.pdf' }
+          console.log(res); 
         });
       })
       .then(function () {
@@ -265,7 +278,4 @@ promptUser()
       });
   })
 
-  // pdf.create(html, options).toFile('./businesscard.pdf', function(err, res) {
-  //   if (err) return console.log(err);
-  //   console.log(res); // { filename: '/app/businesscard.pdf' }
-  // });
+  
